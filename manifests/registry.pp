@@ -56,12 +56,12 @@ define docker::registry(
     # end up with multiple resources managing the same files, and there isn't
     # another great place to put this.
     exec { "Create ${homedir}/.docker for ${title}":
-      command => "mkdir -m 0700 -p ${homedir}/.docker",
+      command => "/bin/mkdir -m 0700 -p ${homedir}/.docker",
       creates => "${homedir}/.docker",
     }
 
     -> exec { "Create ${homedir}/.docker/config.json for ${title}":
-      command => "echo '{}' > ${homedir}/.docker/config.json; chmod 0600 ${homedir}/.docker/config.json",
+      command => "/bin/echo '{}' > ${homedir}/.docker/config.json; /bin/chmod 0600 ${homedir}/.docker/config.json",
       creates => "${homedir}/.docker/config.json",
     }
 
