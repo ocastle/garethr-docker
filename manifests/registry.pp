@@ -62,9 +62,12 @@ define docker::registry(
     $auth_environment = undef
   }
 
+  $auth_string = base64('encode', "${username}:${password}", 'strict')
+
   exec { "${title} auth":
     environment => $auth_environment,
     command     => $auth_cmd,
+    unless      => "/usr/bin/grep -qPaz '(^.*)\"auths\": {\\n.*\"${server}\": {\\n\\s+\"auth\": \"${auth_string}\"' ~${local_user}/.docker/config.json",
     user        => $local_user,
     cwd         => '/root',
     path        => ['/bin', '/usr/bin'],
