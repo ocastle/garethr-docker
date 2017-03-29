@@ -67,11 +67,10 @@ define docker::registry(
   exec { "${title} auth":
     environment => $auth_environment,
     command     => $auth_cmd,
-    path        => [ '/usr/local/bin/', '/usr/bin/', '/bin/' ],
     unless      => "grep -qPaz '(^.*)\"auths\": {\\n.*\"${server}\": {\\n\\s+\"auth\": \"${auth_string}\"' ~${local_user}/.docker/config.json",
     user        => $local_user,
     cwd         => '/root',
-    path        => ['/bin', '/usr/bin'],
+    path        => ['/bin', '/usr/bin', '/usr/local/bin/' ],
     timeout     => 0,
   }
 
