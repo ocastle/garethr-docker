@@ -67,7 +67,8 @@ define docker::registry(
   exec { "${title} auth":
     environment => $auth_environment,
     command     => $auth_cmd,
-    unless      => "/usr/bin/grep -qPaz '(^.*)\"auths\": {\\n.*\"${server}\": {\\n\\s+\"auth\": \"${auth_string}\"' ~${local_user}/.docker/config.json",
+    path        => [ '/usr/local/bin/', '/usr/bin/', '/bin/' ],
+    unless      => "grep -qPaz '(^.*)\"auths\": {\\n.*\"${server}\": {\\n\\s+\"auth\": \"${auth_string}\"' ~${local_user}/.docker/config.json",
     user        => $local_user,
     cwd         => '/root',
     path        => ['/bin', '/usr/bin'],
