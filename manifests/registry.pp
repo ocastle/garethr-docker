@@ -1,4 +1,4 @@
-# == Class: docker::registry
+# == Class: docker
 #
 # Module to configure private docker registries from which to pull Docker images
 # If the registry does not require authentication, this module is not required.
@@ -7,30 +7,25 @@
 # [*server*]
 #   The hostname and port of the private Docker registry. Ex: dockerreg:5000
 #
-# [*homedir*]
-#   Home directory of the use to configure the docker registry credentials for.
-#   Default: '/root'
-#
 # [*ensure*]
 #   Whether or not you want to login or logout of a repository
-#   Default: 'present'
 #
 # [*username*]
-#   Username for authentication to private Docker registry.  Required if ensure
-#   is set to present.
+#   Username for authentication to private Docker registry.
+#   auth is not required.
 #
 # [*password*]
-#   Password for authentication to private Docker registry. Required if ensure
-#   is set to present.
+#   Password for authentication to private Docker registry. Leave undef if
+#   auth is not required.
 #
 # [*email*]
-#   Email for registration to private Docker registry. Required if ensure is
-#   set to present.
+#   Email for registration to private Docker registry. Leave undef if
+#   auth is not required.
 #
-# [*show_diff*]
-#   Whether or not to show diff when applying augeas resources.  Setting this
-#   to true may expose sensitive information.
-#   Default: false
+# [*local_user*]
+#   The local user to log in as. Docker will store credentials in this
+#   users home directory
+#
 #
 define docker::registry(
   $server      = $title,
@@ -39,7 +34,6 @@ define docker::registry(
   $password    = undef,
   $email       = undef,
   $local_user  = 'root',
-  $show_diff   = false,
 ) {
   include docker::params
 
@@ -50,6 +44,10 @@ define docker::registry(
   if $ensure == 'present' {
     if $username != undef and $password != undef and $email != undef {
       $auth_cmd = "${docker_command} login -u '${username}' -p \"\${password}\" -e '${email}' ${server}"
+      $auth_environment = "password=${password}"
+    }
+    elsif $username != undef and $password != undef {
+      $auth_cmd = "${docker_command} login -u '${username}' -p \"\${password}\" ${server}"
       $auth_environment = "password=${password}"
     }
     else {

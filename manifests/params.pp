@@ -72,7 +72,7 @@ class docker::params {
   $storage_pool_autoextend_threshold = undef
   $storage_pool_autoextend_percent   = undef
   $storage_config_template           = 'docker/etc/sysconfig/docker-storage.erb'
-  $compose_version                   = '1.7.0'
+  $compose_version                   = '1.9.0'
   $compose_install_path              = '/usr/local/bin'
 
   case $::osfamily {
@@ -125,16 +125,18 @@ class docker::params {
       $docker_group = $docker_group_default
       $package_repos = 'main'
       $use_upstream_package_source = true
+      $pin_upstream_package_source = true
+      $apt_source_pin_level = 10
       $repo_opt = undef
       $nowarn_kernel = false
       $service_config = undef
       $storage_setup_file = undef
 
       $package_cs_source_location = 'http://packages.docker.com/1.9/apt/repo'
-      $package_cs_key_source = 'http://packages.docker.com/1.9/apt/gpg'
+      $package_cs_key_source = 'https://packages.docker.com/1.9/apt/gpg'
       $package_cs_key = '0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e'
       $package_source_location = 'http://apt.dockerproject.org/repo'
-      $package_key_source = 'http://apt.dockerproject.org/gpg'
+      $package_key_source = 'https://apt.dockerproject.org/gpg'
       $package_key = '58118E89F3A912897C070ADBF76221572C52609D'
 
       if ($::operatingsystem == 'Debian' and versioncmp($::operatingsystemmajrelease, '8') >= 0) or
@@ -187,6 +189,8 @@ class docker::params {
       $package_cs_ke = undef
       $package_repos = undef
       $package_release = undef
+      $pin_upstream_package_source = undef
+      $apt_source_pin_level = undef
       $service_name = $service_name_default
       $docker_command = $docker_command_default
       if (versioncmp($::operatingsystemrelease, '7.0') < 0) or ($::operatingsystem == 'Amazon') {
@@ -256,6 +260,8 @@ class docker::params {
       $service_config_template = 'docker/etc/conf.d/docker.erb'
       $storage_config = undef
       $storage_setup_file = undef
+      $pin_upstream_package_source = undef
+      $apt_source_pin_level = undef
     }
     'Gentoo' : {
       $manage_epel = false
@@ -280,6 +286,8 @@ class docker::params {
       $service_config_template = 'docker/etc/conf.d/docker.gentoo.erb'
       $storage_config = undef
       $storage_setup_file = undef
+      $pin_upstream_package_source = undef
+      $apt_source_pin_level = undef
     }
     default: {
       $manage_epel = false
@@ -304,6 +312,8 @@ class docker::params {
       $storage_config = undef
       $storage_setup_file = undef
       $service_config_template = undef
+      $pin_upstream_package_source = undef
+      $apt_source_pin_level = undef
     }
   }
 
